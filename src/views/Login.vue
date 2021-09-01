@@ -106,6 +106,7 @@ export default {
         if (!response.ok) {
           //Check for 400ish and 500ish errors
           this.errorMessage = responseData.message;
+          this.setIsLoading(false);
           throw new Error(responseData.message);
         }
 
@@ -128,7 +129,9 @@ export default {
         this.setIsLoading(false);
         this.$router.push("/");
       } catch (err) {
+        this.setIsLoading(false);
         console.log("Request failed", err);
+        throw err;
       }
     },
   },

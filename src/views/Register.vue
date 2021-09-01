@@ -126,8 +126,8 @@ export default {
           `${Config.VUE_APP_BACKEND_URL}/register`,
           requestOptions
         );
-        const responseData = await response.json();
-
+        const responseData = await response.json(); // parse response data
+        this.$router.push('/login')
         if (!response.ok) {
           //Check for 400ish and 500ish errors
           this.errorMessage = responseData.message;
@@ -136,6 +136,8 @@ export default {
         this.setIsLoading(false);
       } catch (err) {
         console.log("Request failed", err);
+        this.setIsLoading(false);
+        throw err;
       }
     },
   },
