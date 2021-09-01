@@ -1,15 +1,18 @@
 <template>
   <div>
     <v-main>
+      <!-- Loading Circle -->
       <div v-if="getIsLoading" class="text-center">
         <v-progress-circular
           indeterminate
           color="primary"
         ></v-progress-circular>
       </div>
+      <!-- Select Dropdown -->
       <div class="d-flex justify-center mb-6">
         <SelectIndex @selected="onSelected" />
       </div>
+      <!-- Data Table -->
       <div class="d-flex justify-center mb-6">
         <br />
         <ShowIndex :indexId="this.indexID" :key="this.indexID" />

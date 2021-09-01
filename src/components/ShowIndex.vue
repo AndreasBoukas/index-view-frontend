@@ -1,7 +1,9 @@
 <template>
   <div>
+    <!-- If id = 0 then there is no data selected -->
     <div v-if="this.id === 0"></div>
     <div v-else>
+      <!-- Data Table -->
       <v-data-table
         :headers="headers"
         :items="this.indexData"
@@ -22,9 +24,10 @@ export default {
   props: ["indexId"],
   data() {
     return {
+      //Data headers and their values
       headers: [
         {
-          text: "Name (100g serving)",
+          text: "Name",
           align: "start",
           sortable: false,
           value: "instrument.name",
@@ -34,11 +37,12 @@ export default {
         { text: "wkn", value: "instrument.nsin.wkn" },
         { text: "weight", value: "weight" },
       ],
-      id: this.indexId,
+      id: this.indexId, //indexId is prop
       indexData: [],
     };
   },
   watch: {
+    //watch for changes in the id value
     id: function () {
       if (this.id === 0) {
         return;
@@ -62,7 +66,7 @@ export default {
     ...mapMutations(["setIsLoading"]),
     fetchIndex(indexID) {
       this.setIsLoading(true);
-      const storedData = JSON.parse(localStorage.getItem("userData"));
+      const storedData = JSON.parse(localStorage.getItem("userData")); //Get the token
       const requestOptions = {
         method: "GET",
         headers: {

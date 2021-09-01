@@ -1,8 +1,10 @@
 <template>
   <div>
+    <!-- Loading Circle -->
     <div v-if="getIsLoading" class="text-center">
       <v-progress-circular indeterminate color="primary"></v-progress-circular>
     </div>
+    <!-- Login Form -->
     <div class="d-flex justify-center mt-6">
       <form>
         <v-text-field
@@ -29,6 +31,7 @@
         <v-btn class="mr-4" @click="submit"> submit </v-btn>
       </form>
     </div>
+    <!-- Display error if there is one -->
     <div class="d-flex justify-center mt-6">
       <v-alert color="red" type="error" v-if="errorMessage != ''">{{
         errorMessage
@@ -47,9 +50,10 @@ import { mapMutations } from "vuex";
 export default {
   name: "Login",
   data: () => ({
+    // form fields
     username: "",
     password: "",
-    show1: false,
+    show1: false, //show1 is for revealing the password
     authToken: "",
     errorMessage: "",
   }),
@@ -60,6 +64,7 @@ export default {
     password: { required },
   },
   computed: {
+    //Check for validation errors
     usernameErrors() {
       const errors = [];
       if (!this.$v.username.$dirty) return errors;
@@ -83,6 +88,7 @@ export default {
       "setExpirationDate",
       "setIsLoading",
     ]),
+    
     async submit() {
       this.$v.$touch();
       this.setIsLoading(true);

@@ -4,6 +4,7 @@
     <div class="d-flex justify-center mb-6">
       <h3>Please Select an Index</h3>
     </div>
+    <!-- Dropdown menu -->
     <v-select
       :items="indexData"
       item-text="name"
@@ -41,10 +42,9 @@ export default {
   },
   beforeMount() {
     //dont forget on symfony server in public/index.php set headers
-    // fetch("https://index-view.herokuapp.com/api/indices")
     if (this.isLoggedIn) {
       this.setIsLoading(true);
-      const storedData = JSON.parse(localStorage.getItem("userData"));
+      const storedData = JSON.parse(localStorage.getItem("userData")); //Get the token
       const requestOptions = {
         method: "GET",
         headers: {

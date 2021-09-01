@@ -1,7 +1,9 @@
 <template>
   <v-app>
+    <!-- Navbar -->
     <Nav />
 
+    <!-- Rest of the content -->
     <v-main>
       <router-view />
     </v-main>
@@ -22,6 +24,7 @@ export default {
     ...mapGetters(["isLoggedIn", "getExpirationDate", "getToken"]),
   },
   created() {
+    //login the user if a token exists
     this.login();
   },
   updated() {

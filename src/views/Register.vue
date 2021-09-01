@@ -1,8 +1,10 @@
 <template>
   <div>
+    <!-- Loading circle -->
     <div v-if="getIsLoading" class="text-center">
       <v-progress-circular indeterminate color="primary"></v-progress-circular>
     </div>
+    <!-- Register Form -->
     <div class="d-flex justify-center mt-6">
       <form>
         <v-text-field
@@ -40,6 +42,7 @@
       </form>
     </div>
 
+    <!-- Display error if there is one -->
     <div class="d-flex justify-center mt-6">
       <v-alert color="red" type="error" v-if="errorMessage != ''">{{
         errorMessage
@@ -63,9 +66,11 @@ import { mapGetters } from "vuex";
 export default {
   name: "Register",
   data: () => ({
+    //form fields
     username: "",
     password: "",
     repeatPassword: "",
+    //show1 and show2 are for revealing the password
     show1: false,
     show2: false,
     errorMessage: "",
@@ -78,6 +83,7 @@ export default {
     repeatPassword: { required, sameAsPassword: sameAs("password") },
   },
   computed: {
+    //Check for validation Errors
     usernameErrors() {
       const errors = [];
       if (!this.$v.username.$dirty) return errors;
@@ -111,6 +117,7 @@ export default {
       "setExpirationDate",
       "setIsLoading",
     ]),
+
     async submit() {
       this.$v.$touch();
       this.setIsLoading(true);
