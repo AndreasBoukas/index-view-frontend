@@ -1,44 +1,64 @@
 <template>
   <v-app>
-    <v-app-bar app color="primary" dark>
-      <h1>Index View</h1>
-    </v-app-bar>
+    <Nav />
 
     <v-main>
-      <div class="d-flex justify-center mb-6">
-      <SelectIndex @selected="onSelected" />
-      </div>
-      <div class="d-flex justify-center mb-6">
-      <br>
-      <ShowIndex :indexId="this.indexID" :key="this.indexID" />
-      </div>
-        
+      <router-view />
     </v-main>
   </v-app>
 </template>
 
 <script>
-import SelectIndex from "./components/SelectIndex.vue";
-import ShowIndex from "./components/ShowIndex.vue";
+import Nav from "@/components/Nav.vue";
+import { mapGetters } from "vuex";
+import { mapMutations } from "vuex";
 
 export default {
   name: "App",
-
   components: {
-    SelectIndex,
-    ShowIndex,
+    Nav,
   },
-
+  computed: {
+    ...mapGetters(["isLoggedIn", "getExpirationDate", "getToken"]),
+  },
+  created() {
+    this.login();
+  },
+  updated() {
+    //Loggout the user when the token expires
+    if (this.getToken && this.getExpirationDate) {
+      if (this.getExpirationDate.getTime() < new Date().getTime()) {
+        this.logout();
+      }
+    }
+  },
   methods: {
-    onSelected(value) {
-      this.indexID = value;
-    },
-  },
+    ...mapMutations(["setUser", "setToken", "setExpirationDate"]),
+    logout() {
+      localStorage.removeItem("userData");
+      this.setUser(null);
+      this.setToken(null);
+      this.setExpirationDate(null);
 
-  data() {
-    return {
-      indexID: 0,
-    };
+      //This is to prevent the avoided redundant navigation error
+      if (this.$route.path != "/login") {
+        this.$router.push("/login");
+      }
+    },
+    login() {
+      const storedData = JSON.parse(localStorage.getItem("userData"));
+
+      if (
+        storedData &&
+        storedData.token &&
+        new Date(storedData.expiration) > new Date()
+      ) {
+        this.setToken(storedData.token);
+        this.setUser(storedData.user);
+        this.setExpirationDate(new Date(storedData.expiration));
+        this.$router.push("/");
+      }
+    },
   },
 };
 </script>
