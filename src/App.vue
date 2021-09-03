@@ -39,6 +39,7 @@ export default {
     //Loggout the user when the token expires
     if (this.getToken && this.getExpirationDate) {
       if (this.getExpirationDate.getTime() < new Date().getTime()) {
+        //logout function comes from authMixin
         this.logout();
       }
     }

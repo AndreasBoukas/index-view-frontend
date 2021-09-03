@@ -121,6 +121,7 @@ export default {
 
     async submit() {
       this.$v.$touch();
+      //register function comes from authMixin
       this.register(
         this.$v.username.$model,
         this.$v.password.$model

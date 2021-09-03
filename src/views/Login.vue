@@ -92,6 +92,7 @@ export default {
 
     submit() {
       this.$v.$touch();
+      //login function comes from authMixin
       this.login(
         this.$v.username.$model,
         this.$v.password.$model
