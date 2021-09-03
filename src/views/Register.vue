@@ -53,15 +53,16 @@
 
 <script>
 import { validationMixin } from "vuelidate";
+import authMixin from "../mixins/authMixin"
 import {
   required,
   maxLength,
   minLength,
   sameAs,
 } from "vuelidate/lib/validators";
-import Config from "../../config.json";
 import { mapMutations } from "vuex";
 import { mapGetters } from "vuex";
+// import Register from "../composables/register.js";
 
 export default {
   name: "Register",
@@ -75,7 +76,7 @@ export default {
     show2: false,
     errorMessage: "",
   }),
-  mixins: [validationMixin],
+  mixins: [validationMixin, authMixin],
 
   validations: {
     username: { required, maxLength: maxLength(10) },
@@ -120,32 +121,10 @@ export default {
 
     async submit() {
       this.$v.$touch();
-      this.setIsLoading(true);
-      const requestOptions = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-        },
-        body: `_username=${this.$v.username.$model}&_password=${this.$v.password.$model}`,
-      };
-      try {
-        const response = await fetch(
-          `${Config.VUE_APP_BACKEND_URL}/register`,
-          requestOptions
-        );
-        const responseData = await response.json(); // parse response data
-        this.$router.push('/login')
-        if (!response.ok) {
-          //Check for 400ish and 500ish errors
-          this.errorMessage = responseData.message;
-          throw new Error(responseData.message);
-        }
-        this.setIsLoading(false);
-      } catch (err) {
-        console.log("Request failed", err);
-        this.setIsLoading(false);
-        throw err;
-      }
+      this.register(
+        this.$v.username.$model,
+        this.$v.password.$model
+      );
     },
   },
 };

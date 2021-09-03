@@ -14,18 +14,26 @@
 import Nav from "@/components/Nav.vue";
 import { mapGetters } from "vuex";
 import { mapMutations } from "vuex";
+import authMixin from "./mixins/authMixin.js";
 
 export default {
   name: "App",
   components: {
     Nav,
   },
+  mixins: [authMixin],
   computed: {
     ...mapGetters(["isLoggedIn", "getExpirationDate", "getToken"]),
   },
   created() {
     //login the user if a token exists
-    this.login();
+    const storedData = JSON.parse(localStorage.getItem("userData")); // if the token hasnt expired
+    if (storedData) {
+      this.setToken(storedData.token);
+      this.setUser(storedData.user);
+      this.setExpirationDate(new Date(storedData.expiration));
+      this.$router.push("/");
+    }
   },
   updated() {
     //Loggout the user when the token expires
@@ -37,31 +45,6 @@ export default {
   },
   methods: {
     ...mapMutations(["setUser", "setToken", "setExpirationDate"]),
-    logout() {
-      localStorage.removeItem("userData");
-      this.setUser(null);
-      this.setToken(null);
-      this.setExpirationDate(null);
-
-      //This is to prevent the avoided redundant navigation error
-      if (this.$route.path != "/login") {
-        this.$router.push("/login");
-      }
-    },
-    login() {
-      const storedData = JSON.parse(localStorage.getItem("userData"));
-
-      if (
-        storedData &&
-        storedData.token &&
-        new Date(storedData.expiration) > new Date()
-      ) {
-        this.setToken(storedData.token);
-        this.setUser(storedData.user);
-        this.setExpirationDate(new Date(storedData.expiration));
-        this.$router.push("/");
-      }
-    },
   },
 };
 </script>

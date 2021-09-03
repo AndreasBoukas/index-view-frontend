@@ -26,35 +26,17 @@
 <script>
 import { mapGetters } from "vuex";
 import { mapMutations } from "vuex";
+import authMixin from "../mixins/authMixin"
 
 export default {
   name: "Nav",
-
   computed: {
     ...mapGetters(["isLoggedIn"]),
   },
   methods: {
     ...mapMutations(["setUser", "setToken", "setExpirationDate"]),
-    logout() {
-      localStorage.removeItem("userData");
-      this.setUser(null);
-      this.setToken(null);
-      this.setExpirationDate(null);
-
-      //This is to prevent the avoided redundant navigation error
-      if (this.$route.path != "/login") {
-        this.$router.push("/login");
-      }
-    },
   },
-  mounted() {
-    //This is to prevent the avoided redundant navigation error
-    if (!this.isLoggedIn) {
-      if (this.$route.path != "/login") {
-        this.$router.push("/login");
-      }
-    }
-  },
+  mixins: [ authMixin ]
 };
 </script>
 

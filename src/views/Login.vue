@@ -42,10 +42,11 @@
 
 <script>
 import { validationMixin } from "vuelidate";
+import authMixin from "../mixins/authMixin";
 import { required, maxLength } from "vuelidate/lib/validators";
-import Config from "../../config.json";
 import { mapGetters } from "vuex";
 import { mapMutations } from "vuex";
+// import login from "../composables/login.js";
 
 export default {
   name: "Login",
@@ -57,7 +58,7 @@ export default {
     authToken: "",
     errorMessage: "",
   }),
-  mixins: [validationMixin],
+  mixins: [validationMixin, authMixin],
 
   validations: {
     username: { required, maxLength: maxLength(10) },
@@ -88,57 +89,13 @@ export default {
       "setExpirationDate",
       "setIsLoading",
     ]),
-    
-    async submit() {
+
+    submit() {
       this.$v.$touch();
-      this.setIsLoading(true);
-      const requestOptions = {
-        method: "POST",
-        body: JSON.stringify({
-          username: this.$v.username.$model,
-          password: this.$v.password.$model,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-      try {
-        const response = await fetch(
-          `${Config.VUE_APP_BACKEND_URL}/login_check`,
-          requestOptions
-        );
-        const responseData = await response.json();
-
-        if (!response.ok) {
-          //Check for 400ish and 500ish errors
-          this.errorMessage = responseData.message;
-          this.setIsLoading(false);
-          throw new Error(responseData.message);
-        }
-
-        this.authToken = responseData.token;
-        const tokenExpirationDate = new Date(
-          new Date().getTime() + 1000 * 60 * 10
-        ); //expires in 10 minutes
-
-        localStorage.setItem(
-          "userData",
-          JSON.stringify({
-            user: this.$v.username.$model,
-            token: this.authToken,
-            expiration: tokenExpirationDate.toISOString(),
-          })
-        );
-        this.setUser(this.$v.username.$model);
-        this.setToken(this.authToken);
-        this.setExpirationDate(tokenExpirationDate);
-        this.setIsLoading(false);
-        this.$router.push("/");
-      } catch (err) {
-        this.setIsLoading(false);
-        console.log("Request failed", err);
-        throw err;
-      }
+      this.login(
+        this.$v.username.$model,
+        this.$v.password.$model
+      );
     },
   },
 };
