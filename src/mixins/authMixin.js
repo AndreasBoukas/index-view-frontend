@@ -58,7 +58,7 @@ export default {
       return this.errorMessage;
     },
     register: async function(username, password) {
-      this.setIsLoading(true);
+      store.state.isloading = true;
       const requestOptions = {
         method: "POST",
         headers: {
